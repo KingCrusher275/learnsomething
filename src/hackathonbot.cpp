@@ -28,7 +28,7 @@ void HackathonBot::takeAction(float price)
             daysDown++;
         if (prices[n - 1] <= 1.05 * prices[0] && prices[n - 1] >= 0.95 * prices[0])
             daysNoFlux++;
-        if (daysUp == 52 || daysDown == 47 || price <= 0.38 * prices[0] || price >= 1.89 * prices[0] || daysNoFlux == 10 || threeSeries())
+        if (daysUp == 52 || daysDown == 47 || price < 0.38 * prices[0] || price > 1.89 * prices[0] || daysNoFlux == 10 || threeSeries())
         {
             balance += price;
             holding = false;
