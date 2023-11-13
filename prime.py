@@ -1,26 +1,16 @@
 import timeit
-import math
 
 def disasterCode():
-    uniquePrimes = []
+    spf = [i for i in range(2500)]
     for i in range (2,2500):
-        flag = False
-        for k in range (len(uniquePrimes)):
-            if (i%uniquePrimes[k]==0):
-                flag = True
-                break
-        if(not flag):
-            uniquePrimes.append(i)
-
-    for i in range (2,2500):
-        currentPrime = i
-        for j in range (len(uniquePrimes)):
-            checkPrime = uniquePrimes[j]
-            while (currentPrime%checkPrime==0):
-                currentPrime/=checkPrime
-                
-            if(currentPrime == 1):
-                break
+        if(spf[i] == i):
+            for cntr in range(i*i, 2500, i):
+                spf[cntr] = i
+        
+        curNum = i
+        while(curNum > 1):
+            curNum = curNum // spf[curNum]
+        
 
 # Benchmark the code
 if __name__ == "__main__":
