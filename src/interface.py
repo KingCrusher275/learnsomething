@@ -14,6 +14,9 @@ class Trade:
         else:
             return self.shares < other.shares
 
+    def __repr__(self):
+        return f"Name: {self.person}, Side: {self.side}, Shares: {self.shares}, Amount: {self.amount}"
+
 
 class Exchange:
     # implement this!
@@ -30,13 +33,14 @@ class Exchange:
         """Adds a trade to the exchange (validation required)
         and returns a match if required. It is up to you on how you will
         handle representing trades. """
-        if (trade.person not in self.people):
-            self.people[trade.person] = self.initialBalance
+        if (trade.person not in self.peopleAmounts):  # Each Person starts off with 10 Shares and specified initial balance
+            self.peopleAmounts[trade.person] = self.initialBalance
+            self.peopleShares[trade.person] = 10
         if (trade.side == "BUY"):
-            if (trade.person.balance < trade.shares * trade.amount):
+            if (self.peopleAmounts[trade.person] < trade.shares * trade.amount):
                 return False
             while (trade.shares > 0):
-                index = self.sellTrades.bisect_left(trade.amount)
+                index = self.sellTrades.bisect_left(trade)
                 if (len(self.sellTrades) == 0 or self.sellTrades[index].price > trade.price):
                     break
                 curTrade = self.sellTrades[index]
@@ -67,18 +71,19 @@ class Exchange:
             return True
         else:
             # Check that person actually has the number of shares they want to sell
+
             if (self.peopleShares[trade.person] < trade.shares):
                 return False
 
             while (trade.shares > 0):
                 # Find all trades that have a price higher than the sell price
-                index = self.buyTrades.bisect_right(trade.amount)
+                index = self.buyTrades.bisect_right(trade)
                 # Sell price is higher than all buy trade prices
-                if (index > len(self.buyTrades) or len(self.buyTrades) == 0):
+                if (len(self.buyTrades) == 0 or index >= len(self.buyTrades)):
                     break
                 curTrade = self.buyTrades[index]
                 # Check that person who wants to buy has enough balance
-                if (self.peopleAmounts[curTrade.person] < curTrade.shares * curTrade.price):
+                if (self.peopleAmounts[curTrade.person] < curTrade.shares * curTrade.amount):
                     self.buyTrades.remove(curTrade)
                     continue
 
